@@ -24,7 +24,7 @@ class Huffman_codes{
     public static HashMap<Character, Integer> AscSortedMap = new HashMap<>();
     public static HashMap<Character, Integer> map = new HashMap<>();
     public static HashMap<Character, Double> percentFreqMap = new HashMap<>();
-    public static HashMap<Character, Integer> HuffmanCodeValue = new HashMap<>();
+    public static HashMap<Character, String> HuffmanCodeValue = new HashMap<>();
     ArrayList<Character> charac = new ArrayList<>();
     //String[] charac = new String[sortedMap.size()];
     ArrayList<Integer> charValues = new ArrayList<>();
@@ -36,8 +36,8 @@ class Huffman_codes{
         //HashMap<Character, Integer> map = new HashMap<>();
         String message = ""; 
         a.readFile(message);
-        System.out.println(map);
-        System.out.println(sortedMap);
+        //System.out.println(map);
+        System.out.println(AscSortedMap);
     }
 
     public void readFile(String message) throws Exception{
@@ -60,7 +60,7 @@ class Huffman_codes{
             //outCOunter++;
             //System.out.println();
         } 
-        System.out.println(message);
+        //System.out.println(message);
         frequency(message);
         //System.out.println(counter);
        // System.out.println(outCOunter);
@@ -94,8 +94,8 @@ class Huffman_codes{
 
         }
 
-        sortedMap = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,LinkedHashMap::new)); //https://www.javacodegeeks.com/2017/09/java-8-sorting-hashmap-values-ascending-descending-order.html
+        //sortedMap = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+        //.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,LinkedHashMap::new)); //https://www.javacodegeeks.com/2017/09/java-8-sorting-hashmap-values-ascending-descending-order.html
 
 
         AscSortedMap = map.entrySet().stream().sorted(comparingByValue())
@@ -131,6 +131,7 @@ class Huffman_codes{
 
             HuffmanNode hn = new HuffmanNode();
             hn.c = charac.get(i);
+            //System.out.println(charac.get(i));
             hn.data = charValues.get(i);
 
             hn.leftChild = null;
@@ -140,7 +141,8 @@ class Huffman_codes{
         }
 
         HuffmanNode root = null;
-
+        // HuffmanNode temp = q.peek();
+        // System.out.println(temp.c);
 
         while(q.size() >1){
             HuffmanNode x = q.peek();
@@ -165,7 +167,7 @@ class Huffman_codes{
 
         printHuffmanCode(root, "");
 
-
+//System.out.println(HuffmanCodeValue);
         printInFile(len);
 
     }
@@ -189,14 +191,16 @@ class Huffman_codes{
             //System.out.println(x);
             double percent = (x*100.00)/len;
             //System.out.println(percent);
-            writer.write("%.4f"+percent+ "%");
+            writer.write(percent+ "%");
             writer.write("\n");
             //charac.add(val.getKey().toString().charAt(0));
             //String temp = val.getValue().toString();
             //charValues.add(Integer.parseInt(temp));
             //i++;
-            //it.remove();
+            it.remove();
         }
+        
+        System.out.println(HuffmanCodeValue);
         writer.write("\n \n");
         Iterator itNew = HuffmanCodeValue.entrySet().iterator();
         writer.write("Code table \n");
@@ -218,15 +222,18 @@ class Huffman_codes{
 
     }
     public static void printHuffmanCode(HuffmanNode root, String s){
+        //System.out.println(root.c);
         if(root.leftChild  == null && root.rightChild ==null && Character.isLetter(root.c)){
 
-            HuffmanCodeValue.put(root.c, Integer.parseInt(s));
+            HuffmanCodeValue.put(root.c, s);
             return;
+            
 
         }
 
         printHuffmanCode(root.leftChild, s + "0");
         printHuffmanCode(root.rightChild, s + "1");
+        System.out.println(HuffmanCodeValue);
 
     }
 
@@ -246,7 +253,7 @@ class HuffmanNode{
 
 class myComparator implements Comparator<HuffmanNode>{
     public int compare(HuffmanNode x, HuffmanNode y){
-        return x.data = y.data;
+        return x.data - y.data;
     }
 }
 
