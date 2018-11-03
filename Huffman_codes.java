@@ -1,7 +1,4 @@
 import java.util.*;
-
-//import com.sun.org.apache.xpath.internal.operations.String;
-
 import java.lang.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,50 +17,37 @@ import static java.util.Map.Entry.*;
 
 class Huffman_codes{
     
-    public static HashMap<Character, Integer> sortedMap = new HashMap<>();
-    public static HashMap<Character, Integer> AscSortedMap = new HashMap<>();
-    public static HashMap<Character, Integer> map = new HashMap<>();
-    public static HashMap<Character, Double> percentFreqMap = new HashMap<>();
-    public static HashMap<Character, String> HuffmanCodeValue = new HashMap<>();
+    public static HashMap<String, Integer> sortedMap = new HashMap<>();
+    public static HashMap<String, Integer> AscSortedMap = new HashMap<>();
+    public static HashMap<String, Integer> map = new HashMap<>();
+    public static HashMap<String, Double> percentFreqMap = new HashMap<>();
+    public static HashMap<String, String> HuffmanCodeValue = new HashMap<>();
+    public static HashMap<String, Integer> codeLengthMap = new HashMap<>();
     ArrayList<Character> charac = new ArrayList<>();
-    //String[] charac = new String[sortedMap.size()];
     ArrayList<Integer> charValues = new ArrayList<>();
-    //int[] charValues = new int[sortedMap.size()];
+    int totalBits;
     
     public static void main(String[] args)throws Exception{
 
         Huffman_codes a = new Huffman_codes();
-        //HashMap<Character, Integer> map = new HashMap<>();
         String message = ""; 
         a.readFile(message);
-        //System.out.println(map);
-        System.out.println(AscSortedMap);
     }
 
     public void readFile(String message) throws Exception{
-        //String text ="";
         String msg="";
-        //int counter =0;
-        //int outCOunter = 0;
         
         msg = new String(Files.readAllBytes(Paths.get("infile.dat")));   //https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
 
-        System.out.println(msg.length());
             
         for(int i = 0; i<msg.length(); i++){
             char c = msg.charAt(i);
             if(Character.isDigit(c) || Character.isLetter(c)){
                 message += c;
                 
-                //counter ++;
             }      
-            //outCOunter++;
-            //System.out.println();
         } 
-        //System.out.println(message);
         frequency(message);
-        //System.out.println(counter);
-       // System.out.println(outCOunter);
   
     }
 
@@ -74,52 +58,67 @@ class Huffman_codes{
         int count=0;
         double countPercent = 0;
         double len = message.length();
-        //System.out.println(message.length());
-        for(char c = 'A'; c<='Z'; c++){                 //http://www.vinaysingh.info/frequency-table/
+        for(Character c = 'A'; c<='Z'; c++){                 //http://www.vinaysingh.info/frequency-table/
             count = 0;
-            char ch = c;
+            String ch = "";
+            String s = c.toString();
             for(int i=0; i<message.length(); i++){
-                //System.out.println("abcs");
                 if(c==message.charAt(i)){
+                    ch = s;
                     count++;
-                    //System.out.println("123");
                 }
             }
             if(count>0){
 
-                //System.out.println(c+" : "+count);
-                map.put(c,count);
+                map.put(ch,count);
 
             }
 
         }
 
-        //sortedMap = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-        //.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,LinkedHashMap::new)); //https://www.javacodegeeks.com/2017/09/java-8-sorting-hashmap-values-ascending-descending-order.html
+        for(int i =0; i<10;i++){
+            count = 0;
+            String x = "";
+            String s = Integer.toString(i);
+            for(int j=0; j<message.length(); j++){
+                String t = Character.toString(message.charAt(j));
+                if(s.equals(t)){
+                    x = s;
+                    count++;
+                    //System.out.println(s);
+                    
+                }
+            }
+            if(count>0){
+
+                map.put(x.toString(),count);
+
+            }
+
+        }
+
+        
+
+        sortedMap = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,LinkedHashMap::new)); //https://www.javacodegeeks.com/2017/09/java-8-sorting-hashmap-values-ascending-descending-order.html
 
 
         AscSortedMap = map.entrySet().stream().sorted(comparingByValue())
         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,LinkedHashMap::new));
-        // for(int i =0; i<sortedMap.size();i++){
-        //     charac[i] = sortedMap.get(key);
-        //     charValues[i] = sortedMap.get(value);
-        // }
+        
 
         Iterator it = AscSortedMap.entrySet().iterator();
-        //int i =0;
-        //System.out.println(charValues.size);
+      
         while(it.hasNext()){                                        //https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
             Map.Entry val = (Map.Entry)it.next();
             charac.add(val.getKey().toString().charAt(0));
             String temp = val.getValue().toString();
             charValues.add(Integer.parseInt(temp));
-            //double valPercent = (Integer.parseInt(temp)/message.length())*100;
-            //percentFreqMap.put(val.getKey().toString().charAt(0), valPercent);
-           // i++;
+            
             //it.remove();
         }
-        System.out.println(charac);
-        System.out.println(charValues);
+        //System.out.println(charac);
+       // System.out.println(charValues);
 
         Scanner s = new Scanner(System.in);
 
@@ -131,7 +130,6 @@ class Huffman_codes{
 
             HuffmanNode hn = new HuffmanNode();
             hn.c = charac.get(i);
-            //System.out.println(charac.get(i));
             hn.data = charValues.get(i);
 
             hn.leftChild = null;
@@ -141,8 +139,6 @@ class Huffman_codes{
         }
 
         HuffmanNode root = null;
-        // HuffmanNode temp = q.peek();
-        // System.out.println(temp.c);
 
         while(q.size() >1){
             HuffmanNode x = q.peek();
@@ -164,10 +160,9 @@ class Huffman_codes{
 
             q.add(f);
         }
-
+       
         printHuffmanCode(root, "");
 
-//System.out.println(HuffmanCodeValue);
         printInFile(len);
 
     }
@@ -178,42 +173,77 @@ class Huffman_codes{
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("outfile.dat"));
         Iterator it = sortedMap.entrySet().iterator();
+        writer.write("\t Frequency Table \n \n");
         writer.write("Symbols \t Frequency \t Frequence Percent");
         writer.write("\n");
         while(it.hasNext()){                                        //https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
             Map.Entry val = (Map.Entry)it.next();
+
+            
             writer.write("\t");
             writer.write(val.getKey().toString());
             writer.write("\t \t \t");
             writer.write(val.getValue().toString());
             writer.write("\t \t \t");
             double x = Double.parseDouble(val.getValue().toString());
-            //System.out.println(x);
             double percent = (x*100.00)/len;
-            //System.out.println(percent);
             writer.write(percent+ "%");
             writer.write("\n");
-            //charac.add(val.getKey().toString().charAt(0));
-            //String temp = val.getValue().toString();
-            //charValues.add(Integer.parseInt(temp));
-            //i++;
-            it.remove();
+            
+            //it.remove();
         }
-        
-        System.out.println(HuffmanCodeValue);
+
+        //System.out.println(HuffmanCodeValueSorted);
+        huffmanBits();
+        System.out.println(totalBits);
+        //System.out.println(codeLengthMap);
+
         writer.write("\n \n");
-        Iterator itNew = HuffmanCodeValue.entrySet().iterator();
-        writer.write("Code table \n");
-        writer.write("Symbols \t Huffman Code \n");
-        while(itNew.hasNext()){
-            Map.Entry huffVal = (Map.Entry)itNew.next();
+        writer.write("\t Huffman Code table \n \n");
+        writer.write("Symbols \t Huffman Code \t Code Length \n");
+        Iterator itSort = sortedMap.entrySet().iterator();
+        while(itSort.hasNext()){
+
+            Map.Entry vals = (Map.Entry)itSort.next();
+            //Character temp = vals.getKey();
+            //HuffmanCodeValueSorted.put(temp, HuffmanCodeValue.get(temp).toString());
             writer.write("\t");
-            writer.write(huffVal.getKey().toString());
+            writer.write(vals.getKey().toString());
             writer.write("\t \t \t");
-            writer.write(huffVal.getValue().toString());
+            writer.write(HuffmanCodeValue.get((vals.getKey().toString())));
+            int codeKey = codeLengthMap.get((vals.getKey()));
+            if(codeKey<=3){
+                writer.write("\t \t \t \t");
+            }
+            else if(codeKey>3 && codeKey<8){
+                writer.write("\t \t \t");
+            }
+            else{
+                writer.write("\t \t");
+            }
+            //System.out.println(codeKey);
+            writer.write(Integer.toString(codeKey));
             writer.write("\n");
 
         }
+
+        writer.write("\n");
+        writer.write("Total number of bits: "+Integer.toString(totalBits));
+
+
+        //System.out.println(sortedMap);
+        // Iterator itNew = HuffmanCodeValueSorted.entrySet().iterator();
+        
+        // while(itNew.hasNext()){
+        //     Map.Entry huffVal = (Map.Entry)itNew.next();
+        //     writer.write("\t");
+        //     writer.write(huffVal.getKey().toString());
+        //     writer.write("\t \t \t");
+        //     writer.write(huffVal.getValue().toString());
+        //     writer.write("\n");
+
+        // }
+
 
 
 
@@ -222,10 +252,9 @@ class Huffman_codes{
 
     }
     public static void printHuffmanCode(HuffmanNode root, String s){
-        //System.out.println(root.c);
-        if(root.leftChild  == null && root.rightChild ==null && Character.isLetter(root.c)){
+        if(root.leftChild  == null && root.rightChild ==null && (Character.isLetter(root.c) || Character.isDigit(root.c))){
 
-            HuffmanCodeValue.put(root.c, s);
+            HuffmanCodeValue.put((root.c).toString(), s);
             return;
             
 
@@ -233,7 +262,37 @@ class Huffman_codes{
 
         printHuffmanCode(root.leftChild, s + "0");
         printHuffmanCode(root.rightChild, s + "1");
-        System.out.println(HuffmanCodeValue);
+
+    }
+    
+
+    public void huffmanBits(){
+
+
+        Iterator itSort = HuffmanCodeValue.entrySet().iterator();
+        while(itSort.hasNext()){
+
+            Map.Entry vals = (Map.Entry)itSort.next();
+            String huffKey = vals.getKey().toString();
+            String huffVal = vals.getValue().toString();
+            int codeLength = huffVal.length();
+            codeLengthMap.put(huffKey, codeLength);
+
+        }
+        totalBits = 0;
+        int adder =0;
+        Iterator itBits = sortedMap.entrySet().iterator();
+        while(itBits.hasNext()){
+            Map.Entry vals = (Map.Entry)itBits.next();
+            String keyNew = vals.getKey().toString();
+            int temp =0;
+            int codeLengthTemp = codeLengthMap.get(keyNew);
+            int freq = Integer.parseInt(vals.getValue().toString());
+            adder = adder + (freq*codeLengthTemp);
+        }
+        totalBits = adder;
+
+
 
     }
 
@@ -245,7 +304,7 @@ class Huffman_codes{
 }
 class HuffmanNode{
     int data;
-    char c;
+    Character c;
 
     HuffmanNode leftChild;
     HuffmanNode rightChild;
