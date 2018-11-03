@@ -56,7 +56,7 @@ class Huffman_codes{
         message = message.toUpperCase();
 
         int count=0;
-        double countPercent = 0;
+        //double countPercent = 0;
         double len = message.length();
         for(Character c = 'A'; c<='Z'; c++){                 //http://www.vinaysingh.info/frequency-table/
             count = 0;
@@ -84,9 +84,7 @@ class Huffman_codes{
                 String t = Character.toString(message.charAt(j));
                 if(s.equals(t)){
                     x = s;
-                    count++;
-                    //System.out.println(s);
-                    
+                    count++;                    
                 }
             }
             if(count>0){
@@ -117,10 +115,6 @@ class Huffman_codes{
             
             //it.remove();
         }
-        //System.out.println(charac);
-       // System.out.println(charValues);
-
-        Scanner s = new Scanner(System.in);
 
         int num = charac.size();
 
@@ -193,10 +187,8 @@ class Huffman_codes{
             //it.remove();
         }
 
-        //System.out.println(HuffmanCodeValueSorted);
         huffmanBits();
-        System.out.println(totalBits);
-        //System.out.println(codeLengthMap);
+ 
 
         writer.write("\n \n");
         writer.write("\t Huffman Code table \n \n");
@@ -205,8 +197,6 @@ class Huffman_codes{
         while(itSort.hasNext()){
 
             Map.Entry vals = (Map.Entry)itSort.next();
-            //Character temp = vals.getKey();
-            //HuffmanCodeValueSorted.put(temp, HuffmanCodeValue.get(temp).toString());
             writer.write("\t");
             writer.write(vals.getKey().toString());
             writer.write("\t \t \t");
@@ -221,7 +211,6 @@ class Huffman_codes{
             else{
                 writer.write("\t \t");
             }
-            //System.out.println(codeKey);
             writer.write(Integer.toString(codeKey));
             writer.write("\n");
 
@@ -229,25 +218,6 @@ class Huffman_codes{
 
         writer.write("\n");
         writer.write("Total number of bits: "+Integer.toString(totalBits));
-
-
-        //System.out.println(sortedMap);
-        // Iterator itNew = HuffmanCodeValueSorted.entrySet().iterator();
-        
-        // while(itNew.hasNext()){
-        //     Map.Entry huffVal = (Map.Entry)itNew.next();
-        //     writer.write("\t");
-        //     writer.write(huffVal.getKey().toString());
-        //     writer.write("\t \t \t");
-        //     writer.write(huffVal.getValue().toString());
-        //     writer.write("\n");
-
-        // }
-
-
-
-
-        //System.out.println(len);
         writer.close();
 
     }
@@ -285,21 +255,13 @@ class Huffman_codes{
         while(itBits.hasNext()){
             Map.Entry vals = (Map.Entry)itBits.next();
             String keyNew = vals.getKey().toString();
-            int temp =0;
             int codeLengthTemp = codeLengthMap.get(keyNew);
             int freq = Integer.parseInt(vals.getValue().toString());
             adder = adder + (freq*codeLengthTemp);
         }
         totalBits = adder;
 
-
-
     }
-
-
-
-
-
     
 }
 class HuffmanNode{
