@@ -12,9 +12,6 @@ import static java.util.stream.Collectors.*;
 import static java.util.Map.Entry.*;
 
 
-
-
-
 class Huffman_codes{
     
     public static HashMap<String, Integer> sortedMap = new HashMap<>();
